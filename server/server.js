@@ -12,6 +12,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use('/api/leads', require('./routes/leadRoutes'));
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -19,6 +22,10 @@ app.get('/api/health', (req, res) => {
     timestamp: Date.now()
   });
 });
+
+// Error Handler Middleware
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);
 
 // Port configuration
 const PORT = process.env.PORT || 5000;

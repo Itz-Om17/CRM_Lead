@@ -32,3 +32,19 @@ A Lead Management CRM built using the MERN stack (MongoDB, Express.js, React.js,
    npm run dev
    ```
    The backend server will start on `http://localhost:5000` by default.
+
+## API Endpoints
+
+All responses follow the standard envelope format:
+- **Success**: `{ success: true, data: ... }`
+- **Error**: `{ success: false, message: "..." }`
+
+| Method | Path | Request Body | Description |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/health` | None | Verify the server is running |
+| **POST** | `/api/leads` | `{ name, email, phone, company, status, notes }` | Create a new lead (returns 201) |
+| **GET** | `/api/leads` | None | Get all leads (returns 200) |
+| **GET** | `/api/leads/:id` | None | Get a lead by ID (returns 200) |
+| **PUT** | `/api/leads/:id` | `{ name?, email?, phone?, company?, status?, notes? }` | Update a lead by ID (returns 200) |
+| **DELETE** | `/api/leads/:id` | None | Delete a lead by ID (returns 200) |
+
