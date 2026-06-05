@@ -1,0 +1,35 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.6rem;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: capitalize;
+}
+
+.status-new {
+  background-color: var(--status-new-bg);
+  color: var(--status-new-text);
+}
+
+.status-contacted {
+  background-color: var(--status-contacted-bg);
+  color: var(--status-contacted-text);
+}
+
+.status-qualified {
+  background-color: var(--status-qualified-bg);
+  color: var(--status-qualified-text);
+}
+
+.status-converted {
+  background-color: var(--status-converted-bg);
+  color: var(--status-converted-text);
+}
+
+.status-lost {
+  background-color: var(--status-lost-bg);
+  color: var(--status-lost-text);
+}
