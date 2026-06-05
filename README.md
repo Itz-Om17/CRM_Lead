@@ -33,6 +33,37 @@ A Lead Management CRM built using the MERN stack (MongoDB, Express.js, React.js,
    ```
    The backend server will start on `http://localhost:5000` by default.
 
+### Frontend Setup
+1. Navigate to the client folder:
+   ```bash
+   cd client
+   ```
+2. Install client dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the frontend development server:
+   ```bash
+   npm run dev
+   ```
+   The frontend app will start on `http://localhost:3000` by default.
+
+### Run Full Stack (Recommended)
+You can run both the backend and frontend concurrently from the root directory:
+1. Ensure dependencies are installed in all directories (root, server, and client):
+   ```bash
+   npm install
+   cd server && npm install
+   cd ../client && npm install
+   ```
+2. Start the full MERN application concurrently:
+   ```bash
+   cd ..
+   npm run dev
+   ```
+   This command starts the backend at `http://localhost:5000` and proxy-routes the frontend at `http://localhost:3000`.
+
+
 ## API Endpoints
 
 All responses follow the standard envelope format:
