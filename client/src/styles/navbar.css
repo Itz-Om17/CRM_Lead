@@ -57,3 +57,28 @@
   height: 2px;
   background-color: var(--color-primary);
 }
+
+/* Navbar Responsive Rules */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+    height: auto;
+  }
+  
+  .navbar-container {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  
+  .navbar-links {
+    gap: 1.25rem;
+  }
+}
+

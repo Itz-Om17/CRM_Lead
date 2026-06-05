@@ -225,3 +225,29 @@ input:focus, select:focus, textarea:focus {
   }
 }
 
+/* Base Responsive Rules */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .main-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 1rem 0.75rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+}
+
+
