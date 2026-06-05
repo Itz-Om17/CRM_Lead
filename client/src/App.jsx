@@ -4,21 +4,24 @@ import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import AddLead from './pages/AddLead';
 import EditLead from './pages/EditLead';
+import { ToastProvider } from './components/Toast';
 
 function App() {
   return (
-    <Router>
-      <div className="app-container">
-        <Navbar />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/add" element={<AddLead />} />
-            <Route path="/edit/:id" element={<EditLead />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <ToastProvider>
+      <Router>
+        <div className="app-container">
+          <Navbar />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/add" element={<AddLead />} />
+              <Route path="/edit/:id" element={<EditLead />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </ToastProvider>
   );
 }
 

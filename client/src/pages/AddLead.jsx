@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createLead } from '../api/leadsApi';
 import LeadForm from '../components/LeadForm';
+import { useToast } from '../components/Toast';
 
 function AddLead() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState(null);
 
@@ -14,15 +16,19 @@ function AddLead() {
     try {
       const res = await createLead(leadData);
       if (res.success) {
+        showToast('Lead created successfully', 'success');
         navigate('/');
       }
     } catch (err) {
       if (err.response?.data?.errors) {
         setServerErrors(err.response.data.errors);
+        showToast('Please fix the validation errors.', 'error');
       } else if (err.response?.status === 409) {
         setServerErrors({ email: 'A lead with this email address already exists.' });
+        showToast('A lead with this email address already exists.', 'error');
       } else {
-        alert(err.response?.data?.message || 'An error occurred while creating the lead.');
+        const errorMsg = err.response?.data?.message || 'An error occurred while creating the lead.';
+        showToast(errorMsg, 'error');
       }
     } finally {
       setSubmitting(false);

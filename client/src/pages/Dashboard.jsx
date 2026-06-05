@@ -6,9 +6,11 @@ import LeadTable from '../components/LeadTable';
 import Pagination from '../components/Pagination';
 import Loader from '../components/Loader';
 import ConfirmModal from '../components/ConfirmModal';
+import { useToast } from '../components/Toast';
 import '../styles/dashboard.css';
 
 function Dashboard() {
+  const { showToast } = useToast();
   const [leads, setLeads] = useState([]);
   const [stats, setStats] = useState({
     total: 0,
@@ -64,11 +66,13 @@ function Dashboard() {
         setPage(res.data.page);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to connect to the backend server.');
+      const msg = err.response?.data?.message || 'Failed to connect to the backend server.';
+      setError(msg);
+      showToast(msg, 'error');
     } finally {
       setLoading(false);
     }
-  }, [search, status, sortBy, order, page]);
+  }, [search, status, sortBy, order, page, showToast]);
 
   // Sync leads list on query changes
   useEffect(() => {
@@ -109,13 +113,14 @@ function Dashboard() {
       if (res.success) {
         setIsModalOpen(false);
         setSelectedLead(null);
+        showToast('Lead deleted successfully', 'success');
         fetchLeads();
         fetchStats();
       }
     } catch (err) {
       setIsModalOpen(false);
       setSelectedLead(null);
-      alert(err.response?.data?.message || 'Error occurred while deleting the lead.');
+      showToast(err.response?.data?.message || 'Error occurred while deleting the lead.', 'error');
     }
   };
 

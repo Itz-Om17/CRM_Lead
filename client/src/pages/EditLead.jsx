@@ -3,10 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getLeadById, updateLead } from '../api/leadsApi';
 import LeadForm from '../components/LeadForm';
 import Loader from '../components/Loader';
+import { useToast } from '../components/Toast';
 
 function EditLead() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [lead, setLead] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,13 +25,15 @@ function EditLead() {
           setLead(res.data);
         }
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch the lead details.');
+        const msg = err.response?.data?.message || 'Failed to fetch the lead details.';
+        setError(msg);
+        showToast(msg, 'error');
       } finally {
         setLoading(false);
       }
     };
     fetchLead();
-  }, [id]);
+  }, [id, showToast]);
 
   const handleSubmit = async (leadData) => {
     setSubmitting(true);
@@ -37,15 +41,19 @@ function EditLead() {
     try {
       const res = await updateLead(id, leadData);
       if (res.success) {
+        showToast('Lead updated successfully', 'success');
         navigate('/');
       }
     } catch (err) {
       if (err.response?.data?.errors) {
         setServerErrors(err.response.data.errors);
+        showToast('Please fix the validation errors.', 'error');
       } else if (err.response?.status === 409) {
         setServerErrors({ email: 'A lead with this email address already exists.' });
+        showToast('A lead with this email address already exists.', 'error');
       } else {
-        alert(err.response?.data?.message || 'An error occurred while updating the lead.');
+        const errorMsg = err.response?.data?.message || 'An error occurred while updating the lead.';
+        showToast(errorMsg, 'error');
       }
     } finally {
       setSubmitting(false);
