@@ -43,8 +43,21 @@ All responses follow the standard envelope format:
 | :--- | :--- | :--- | :--- |
 | **GET** | `/api/health` | None | Verify the server is running |
 | **POST** | `/api/leads` | `{ name, email, phone, company, status, notes }` | Create a new lead (returns 201) |
-| **GET** | `/api/leads` | None | Get all leads (returns 200) |
+| **GET** | `/api/leads` | None | Get all leads (supports query parameters; returns 200) |
+| **GET** | `/api/leads/stats` | None | Get statistics of leads grouped by status (returns 200) |
 | **GET** | `/api/leads/:id` | None | Get a lead by ID (returns 200) |
 | **PUT** | `/api/leads/:id` | `{ name?, email?, phone?, company?, status?, notes? }` | Update a lead by ID (returns 200) |
 | **DELETE** | `/api/leads/:id` | None | Delete a lead by ID (returns 200) |
+
+### GET /api/leads Query Parameters
+
+You can customize the lead list using the following optional query parameters:
+
+- `search`: Searches across `name`, `email`, and `company` fields using the text index (e.g., `?search=google`).
+- `status`: Filters leads by status (e.g., `?status=New`). Allowed values: `New`, `Contacted`, `Qualified`, `Converted`, `Lost`.
+- `sortBy`: Fields to sort by (e.g., `?sortBy=name`). Default is `createdAt`.
+- `order`: Sorting order, either `asc` or `desc`. Default is `desc`.
+- `page`: Page number for pagination (e.g., `?page=2`). Default is `1`.
+- `limit`: Number of leads to return per page (e.g., `?limit=15`). Default is `10`.
+
 

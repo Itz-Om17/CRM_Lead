@@ -5,7 +5,8 @@ const {
   getAllLeads,
   getLeadById,
   updateLead,
-  deleteLead
+  deleteLead,
+  getLeadStats
 } = require('../controllers/leadController');
 
 const router = express.Router();
@@ -85,6 +86,10 @@ const updateValidationRules = [
 router.route('/')
   .post(createValidationRules, validateResults, createLead)
   .get(getAllLeads);
+
+// Register stats route before /:id to prevent routing conflict
+router.route('/stats')
+  .get(getLeadStats);
 
 router.route('/:id')
   .get(getLeadById)
