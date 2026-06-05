@@ -2,6 +2,14 @@
 
 A Lead Management CRM built using the MERN stack (MongoDB, Express.js, React.js, Node.js) for small businesses to manage, track, search, filter, and monitor their sales pipeline.
 
+## Features
+- **Sales Pipeline Dashboard**: Real-time sales statistics (Total Leads, New, Contacted, Qualified, Converted, Lost) with custom indicators.
+- **Advanced Searching**: Instant, debounced text search across lead name, email, and company fields.
+- **Dynamic Filtering**: Filter leads instantly by sales pipeline stage.
+- **Flexible Sorting**: Sort leads dynamically by creation date, alphabetical name, and company name.
+- **Pagination**: Efficient server-side pagination with adjustable pages.
+- **Standard CRUD APIs**: Robust backend REST API for creating, reading, updating, and deleting leads.
+
 ## Tech Stack
 - **Frontend**: React.js with React Router DOM v6, Axios, Vanilla CSS
 - **Backend**: Node.js, Express.js
