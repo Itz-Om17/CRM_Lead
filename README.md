@@ -132,19 +132,6 @@ This CRM is equipped with full user authentication and lead ownership isolation:
   - **Danger Zone Sign Out**: Terminate user sessions and clear client-side authorization caches.
 - **Token Configuration**: The token's signing key and expiration length are set in the server `.env` file (`JWT_SECRET` and `JWT_EXPIRES_IN`).
 
----
-
-## UI/UX & Layout Enhancements
-
-To optimize screen space and provide a premium user experience, the following enhancements have been implemented:
-
-- **Horizontal Layout Redesigns**:
-  - **Register Page**: Broadened the card container horizontally to `680px` max-width and grouped the fields in a responsive two-column grid. Full Name / Username are placed side-by-side, Email spans full width, and Password / Confirm Password are placed side-by-side. This allows the form to be filled on a single screen without vertical scrolling.
-  - **Manage Profile Page**: Enlarged the profile card container to `900px` max-width and split the forms into a clean side-by-side column grid. Personal Profile Settings and Password Updates are arranged horizontally, separated by a thin vertical divider, with the Sign Out button moved to the top-right header for maximum space efficiency.
-- **Back Home Option**: Added a clear `← Back to Home` navigation link at the top-left of the container on both the **Register Page** and **Login Page** so users can easily return to the main landing page.
-- **Portfolio Redirect Footer**: Configured the public landing page footer copyright information to display `© 2026 LeadFlow — Om Deshpande`. Hovering over or clicking the developer's name dynamically redirects the user to their professional portfolio at `om-deshpande.vercel.app`.
-
----
 
 ## Route Map
 
@@ -277,61 +264,22 @@ lead-crm/
 
 ---
 
-## Deployment Guide
-
-### Deploying the Backend on Render
-1. Create a free account on [Render](https://render.com).
-2. Connect your GitHub repository.
-3. Select **New** > **Web Service**.
-4. Configure the service settings:
-   - **Environment**: `Node`
-   - **Root Directory**: `server`
-   - **Build Command**: `npm install`
-   - **Start Command**: `node server.js`
-5. In the **Environment** tab, add the environment variables:
-   - `PORT`: `10000` (Render's default)
-   - `MONGODB_URI`: `mongodb+srv://<username>:<password>@cluster.mongodb.net/lead-crm?retryWrites=true&w=majority` (your MongoDB Atlas connection string)
-   - `JWT_SECRET`: A strong random secret string
-   - `JWT_EXPIRES_IN`: `7d`
-6. Click **Deploy Web Service**. Render will assign a public URL (e.g., `https://crm-api.onrender.com`).
-
-### Deploying the Frontend on Vercel
-1. Create a free account on [Vercel](https://vercel.com).
-2. Connect your GitHub repository.
-3. Click **Add New** > **Project** and select your repository.
-4. Configure the project settings:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: `client`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-5. Set the Vite proxy or API base URL. *Note: Since Vite proxies `/api` during local dev, we configure Axios to point directly to Render in production.*
-   - Update `client/src/api/leadsApi.js` to set the `BACKEND_URL`:
-     ```javascript
-     const BACKEND_URL = import.meta.env.PROD
-       ? 'https://your-backend.onrender.com'
-       : '';
-     ```
-6. Click **Deploy**. Vercel will publish the frontend site (e.g., `https://crm-client.vercel.app`).
-
----
-
 ## Git Commit History Overview
 Here is the progression checklist representing how the system was structured step-by-step:
-1. `chore: initialize project structure and root configuration`
-2. `feat: setup Express server with MongoDB connection and Lead model`
-3. `feat: implement core CRUD REST API for leads`
-4. `feat: add search, filter, sort, pagination and stats to leads API`
-5. `feat: initialize React app with routing, API layer and global styles`
-6. `feat: add Navbar, Loader, StatusBadge and ConfirmModal components`
-7. `feat: build full Dashboard with stats, search, filter, sort and pagination`
-8. `feat: implement Add Lead and Edit Lead pages with validation`
-9. `feat: add toast notifications and polish all UI interactions`
-10. `feat: complete responsive design for mobile and tablet`
-11. `docs: complete README with full setup guide and API reference`
-12. `feat: add JWT authentication and per-user lead ownership`
-13. `feat: build public landing page with hero features and CTA sections`
-14. `feat: add login register pages auth context and protected routing`
-15. `feat: add profile page and navbar profile dropdown with logout`
+1. `setupped root structure`
+2. `backend setup and db model`
+3. `added rest implementation`
+4. `added endpoints`
+5. `created react app with routing`
+6. `added ui components`
+7. `dashboard improvements`
+8. `added forms`
+9. `added notifications features`
+10.`added responsive design`
+11. `added jwt authentication`
+12. `done with frontend abd and backend`
+13. `deployment changes`
+14.`deployment changes`
 
 ---
 
