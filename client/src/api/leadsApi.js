@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-// In production, direct requests to the deployed backend on Render. In development, use Vite's local proxy.
-const BACKEND_URL = import.meta.env.PROD
-  ? 'https://your-backend-api.onrender.com' // Replace with your Render URL
-  : '';
+// Since both frontend and backend are deployed in the same Vercel project, we can use relative paths.
+const BACKEND_URL = '';
 
 const API_BASE = `${BACKEND_URL}/api/leads`;
 const AUTH_BASE = `${BACKEND_URL}/api/auth`;
