@@ -175,7 +175,7 @@ function LeadForm({ mode = 'add', initialData = null, onSubmit = null, serverErr
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/dashboard')}
           disabled={submitting}
         >
           Cancel

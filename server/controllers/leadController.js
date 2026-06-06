@@ -29,15 +29,15 @@ const createLead = async (req, res, next) => {
   }
 };
 
-// @desc    Get all leads owned by the logged-in user
+// @desc    Get all leads (visible to all authenticated users)
 // @route   GET /api/leads
 // @access  Private
 const getAllLeads = async (req, res, next) => {
   try {
     const { search, status, sortBy, order, page, limit } = req.query;
     
-    // Restrict query to leads owned by the authenticated user
-    const queryObj = { createdBy: req.user._id };
+    // All authenticated users can view all leads
+    const queryObj = {};
 
     // Search filter: searches name, email, company via case-insensitive text index
     if (search) {
@@ -59,9 +59,10 @@ const getAllLeads = async (req, res, next) => {
     const limitNum = parseInt(limit, 10) || 10;
     const skipNum = (pageNum - 1) * limitNum;
 
-    // Execute queries
+    // Execute queries — populate creator info for "Managed By" column
     const total = await Lead.countDocuments(queryObj);
     const leads = await Lead.find(queryObj)
+      .populate('createdBy', 'name username')
       .sort(sort)
       .skip(skipNum)
       .limit(limitNum);
@@ -82,15 +83,15 @@ const getAllLeads = async (req, res, next) => {
   }
 };
 
-// @desc    Get a single lead by ID (only if owned by the user)
+// @desc    Get a single lead by ID (viewable by any authenticated user)
 // @route   GET /api/leads/:id
 // @access  Private
 const getLeadById = async (req, res, next) => {
   try {
-    const lead = await Lead.findById(req.params.id);
+    const lead = await Lead.findById(req.params.id)
+      .populate('createdBy', 'name username');
     
-    // Return 404 if not found or if the lead belongs to another user
-    if (!lead || lead.createdBy.toString() !== req.user._id.toString()) {
+    if (!lead) {
       return res.status(404).json({
         success: false,
         message: 'Lead not found'
@@ -183,15 +184,12 @@ const deleteLead = async (req, res, next) => {
   }
 };
 
-// @desc    Get lead statistics for the logged-in user
+// @desc    Get lead statistics (global across all users)
 // @route   GET /api/leads/stats
 // @access  Private
 const getLeadStats = async (req, res, next) => {
   try {
     const stats = await Lead.aggregate([
-      {
-        $match: { createdBy: req.user._id }
-      },
       {
         $group: {
           _id: '$status',
@@ -215,7 +213,7 @@ const getLeadStats = async (req, res, next) => {
       }
     });
 
-    formattedStats.total = await Lead.countDocuments({ createdBy: req.user._id });
+    formattedStats.total = await Lead.countDocuments();
 
     res.status(200).json({
       success: true,

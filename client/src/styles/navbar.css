@@ -1,3 +1,5 @@
+/* NAVBAR STYLES */
+
 .navbar {
   background-color: var(--bg-navbar);
   color: var(--text-navbar);
@@ -18,44 +20,165 @@
 
 .navbar-brand {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #ffffff;
+  letter-spacing: -0.5px;
 }
 
 .navbar-brand:hover {
   color: #ffffff;
 }
 
-.navbar-links {
+.navbar-right {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
 }
 
-.nav-link {
-  color: var(--text-navbar);
-  font-size: 14px;
-  font-weight: 500;
-  transition: color 0.2s;
-  padding: 0.25rem 0;
+/* Add Lead Button Styling */
+.nav-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  height: 36px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav-add-btn:hover {
+  background-color: var(--color-primary-hover);
+  color: #ffffff;
+}
+
+/* Profile Trigger Wrapper */
+.nav-profile-wrapper {
   position: relative;
 }
 
-.nav-link:hover {
-  color: #ffffff;
+.nav-profile-trigger {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  user-select: none;
 }
 
-.nav-link.active {
-  color: #ffffff;
+.nav-profile-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
-.nav-link.active::after {
-  content: '';
+.nav-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #2d4a63;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.nav-user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-navbar);
+}
+
+.nav-chevron {
+  font-size: 8px;
+  color: var(--text-secondary);
+  transition: transform 0.15s ease;
+}
+
+.nav-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Card Overlay */
+.nav-dropdown {
   position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--color-primary);
+  right: 0;
+  top: 42px;
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 180px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  animation: dropdown-slide-down 0.15s ease-out;
+}
+
+.nav-dropdown-header {
+  padding: 10px 12px 6px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-dropdown-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.nav-dropdown-username {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 4px 0;
+}
+
+.nav-dropdown-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  text-align: left;
+}
+
+.nav-dropdown-item:hover {
+  background-color: #f5f4f0;
+}
+
+.nav-dropdown-item.danger {
+  color: var(--color-danger);
+}
+
+.nav-dropdown-item.danger:hover {
+  background-color: #fff5f5;
+  color: var(--color-danger-hover);
+}
+
+@keyframes dropdown-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Navbar Responsive Rules */
@@ -77,8 +200,25 @@
     align-items: center;
   }
   
-  .navbar-links {
-    gap: 1.25rem;
+  .navbar-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .nav-dropdown {
+    right: 50%;
+    transform: translateX(50%);
+  }
+  
+  @keyframes dropdown-slide-down {
+    from {
+      opacity: 0;
+      transform: translate(50%, 6px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(50%, 0);
+    }
   }
 }
-

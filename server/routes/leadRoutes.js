@@ -83,6 +83,10 @@ const updateValidationRules = [
     .isLength({ max: 500 }).withMessage('Notes cannot exceed 500 characters')
 ];
 
+// Register stats route before protect to make it public, and before /:id to prevent routing conflict
+router.route('/stats')
+  .get(getLeadStats);
+
 // Apply protection middleware to all lead routes below
 router.use(protect);
 
@@ -90,10 +94,6 @@ router.use(protect);
 router.route('/')
   .post(createValidationRules, validateResults, createLead)
   .get(getAllLeads);
-
-// Register stats route before /:id to prevent routing conflict
-router.route('/stats')
-  .get(getLeadStats);
 
 router.route('/:id')
   .get(getLeadById)

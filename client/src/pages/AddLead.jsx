@@ -17,7 +17,7 @@ function AddLead() {
       const res = await createLead(leadData);
       if (res.success) {
         showToast('Lead created successfully', 'success');
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (err) {
       if (err.response?.data?.errors) {

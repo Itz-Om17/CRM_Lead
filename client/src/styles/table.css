@@ -59,6 +59,15 @@
   text-overflow: ellipsis;
 }
 
+.email-cell {
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
 .btn-sm {
   padding: 0.4rem 0.8rem;
   font-size: 12px;

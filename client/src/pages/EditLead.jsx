@@ -4,11 +4,13 @@ import { getLeadById, updateLead } from '../api/leadsApi';
 import LeadForm from '../components/LeadForm';
 import Loader from '../components/Loader';
 import { useToast } from '../components/Toast';
+import { useAuth } from '../context/AuthContext';
 
 function EditLead() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { user } = useAuth();
   const [lead, setLead] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +24,14 @@ function EditLead() {
       try {
         const res = await getLeadById(id);
         if (res.success) {
-          setLead(res.data);
+          const fetchedLead = res.data;
+          const creatorId = fetchedLead.createdBy?._id || fetchedLead.createdBy;
+          if (user && String(creatorId) !== String(user._id)) {
+            setError('You are not authorized to modify this lead.');
+            showToast('You are not authorized to modify this lead.', 'error');
+          } else {
+            setLead(fetchedLead);
+          }
         }
       } catch (err) {
         const msg = err.response?.data?.message || 'Failed to fetch the lead details.';
@@ -33,7 +42,7 @@ function EditLead() {
       }
     };
     fetchLead();
-  }, [id, showToast]);
+  }, [id, showToast, user]);
 
   const handleSubmit = async (leadData) => {
     setSubmitting(true);
@@ -42,7 +51,7 @@ function EditLead() {
       const res = await updateLead(id, leadData);
       if (res.success) {
         showToast('Lead updated successfully', 'success');
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (err) {
       if (err.response?.data?.errors) {
@@ -74,7 +83,7 @@ function EditLead() {
       ) : error ? (
         <div className="card" style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center', padding: '2rem' }}>
           <p style={{ color: 'var(--color-danger)', marginBottom: '1.5rem' }}>{error}</p>
-          <button className="btn btn-primary" onClick={() => navigate('/')}>
+          <button className="btn btn-primary" onClick={() => navigate('/dashboard')}>
             Back to Dashboard
           </button>
         </div>

@@ -6,6 +6,7 @@ import LeadTable from '../components/LeadTable';
 import Pagination from '../components/Pagination';
 import Loader from '../components/Loader';
 import ConfirmModal from '../components/ConfirmModal';
+import LeadDetailModal from '../components/LeadDetailModal';
 import { useToast } from '../components/Toast';
 import '../styles/dashboard.css';
 
@@ -31,17 +32,19 @@ function Dashboard() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Modal deletion state
+  // Confirm delete modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
+
+  // Lead detail modal state
+  const [detailLead, setDetailLead] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Fetch statistics
   const fetchStats = async () => {
     try {
       const res = await getLeadStats();
-      if (res.success) {
-        setStats(res.data);
-      }
+      if (res.success) setStats(res.data);
     } catch (err) {
       // Fail silently for stats
     }
@@ -52,14 +55,7 @@ function Dashboard() {
     setLoading(true);
     setError(null);
     try {
-      const res = await getLeads({
-        search,
-        status,
-        sortBy,
-        order,
-        page,
-        limit: 10
-      });
+      const res = await getLeads({ search, status, sortBy, order, page, limit: 10 });
       if (res.success) {
         setLeads(res.data.leads);
         setTotalPages(res.data.totalPages);
@@ -74,26 +70,11 @@ function Dashboard() {
     }
   }, [search, status, sortBy, order, page, showToast]);
 
-  // Sync leads list on query changes
-  useEffect(() => {
-    fetchLeads();
-  }, [fetchLeads]);
+  useEffect(() => { fetchLeads(); }, [fetchLeads]);
+  useEffect(() => { fetchStats(); }, []);
 
-  // Sync stats list on page load
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const handleSearch = (query) => {
-    setSearch(query);
-    setPage(1);
-  };
-
-  const handleStatusFilter = (e) => {
-    setStatus(e.target.value);
-    setPage(1);
-  };
-
+  const handleSearch = (query) => { setSearch(query); setPage(1); };
+  const handleStatusFilter = (e) => { setStatus(e.target.value); setPage(1); };
   const handleSortChange = (e) => {
     const [field, sortOrder] = e.target.value.split(':');
     setSortBy(field);
@@ -101,6 +82,27 @@ function Dashboard() {
     setPage(1);
   };
 
+  // Row click → open detail modal
+  const handleRowClick = (lead, startInEditMode = false) => {
+    setDetailLead(lead);
+    setIsEditMode(startInEditMode);
+  };
+
+  // Detail modal closed
+  const handleDetailClose = () => {
+    setDetailLead(null);
+    setIsEditMode(false);
+  };
+
+  // After an in-modal edit, refresh data
+  const handleDetailUpdated = () => {
+    setDetailLead(null);
+    setIsEditMode(false);
+    fetchLeads();
+    fetchStats();
+  };
+
+  // Delete trigger (can come from table row or from inside the modal)
   const handleDeleteClick = (lead) => {
     setSelectedLead(lead);
     setIsModalOpen(true);
@@ -129,7 +131,7 @@ function Dashboard() {
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">Sales Pipeline</h1>
-          <p className="dashboard-subtitle">Manage and track your company's leads</p>
+          <p className="dashboard-subtitle">Track and manage your team's leads</p>
         </div>
       </div>
 
@@ -147,11 +149,7 @@ function Dashboard() {
           <SearchBar onSearch={handleSearch} />
         </div>
         <div className="filter-controls">
-          <select 
-            value={status} 
-            onChange={handleStatusFilter}
-            aria-label="Filter by Status"
-          >
+          <select value={status} onChange={handleStatusFilter} aria-label="Filter by Status">
             <option value="">All Statuses</option>
             <option value="New">New</option>
             <option value="Contacted">Contacted</option>
@@ -159,12 +157,7 @@ function Dashboard() {
             <option value="Converted">Converted</option>
             <option value="Lost">Lost</option>
           </select>
-
-          <select 
-            value={`${sortBy}:${order}`} 
-            onChange={handleSortChange}
-            aria-label="Sort by"
-          >
+          <select value={`${sortBy}:${order}`} onChange={handleSortChange} aria-label="Sort by">
             <option value="createdAt:desc">Created (Newest)</option>
             <option value="createdAt:asc">Created (Oldest)</option>
             <option value="name:asc">Name (A-Z)</option>
@@ -190,22 +183,35 @@ function Dashboard() {
           </div>
         ) : (
           <>
-            <LeadTable leads={leads} onDeleteClick={handleDeleteClick} />
+            <LeadTable
+              leads={leads}
+              onRowClick={handleRowClick}
+              onDeleteClick={handleDeleteClick}
+            />
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
           </>
         )}
       </div>
 
+      {/* Confirm Delete Modal */}
       <ConfirmModal
         isOpen={isModalOpen}
         title="Delete Lead"
         message={`Are you sure you want to delete the lead for "${selectedLead?.name}"? This action is permanent.`}
         onConfirm={handleConfirmDelete}
-        onCancel={() => {
-          setIsModalOpen(false);
-          setSelectedLead(null);
-        }}
+        onCancel={() => { setIsModalOpen(false); setSelectedLead(null); }}
       />
+
+      {/* Lead Detail / Edit Modal */}
+      {detailLead && (
+        <LeadDetailModal
+          lead={detailLead}
+          onClose={handleDetailClose}
+          onUpdated={handleDetailUpdated}
+          onDeleteClick={handleDeleteClick}
+          initialEdit={isEditMode}
+        />
+      )}
     </div>
   );
 }
