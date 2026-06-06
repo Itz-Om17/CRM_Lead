@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_BASE = '/api/leads';
+// In production, direct requests to the deployed backend on Render. In development, use Vite's local proxy.
+const API_BASE = import.meta.env.PROD
+  ? 'https://your-backend-api.onrender.com/api/leads' // Replace with your Render URL
+  : '/api/leads';
+
 
 /**
  * Fetch leads list with optional query params (search, status, sortBy, order, page, limit)

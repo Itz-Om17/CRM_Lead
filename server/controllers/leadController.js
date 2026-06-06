@@ -2,11 +2,22 @@ const Lead = require('../models/Lead');
 
 // @desc    Create a new lead
 // @route   POST /api/leads
-// @access  Public
+// @access  Private
 const createLead = async (req, res, next) => {
   try {
     const { name, email, phone, company, status, notes } = req.body;
-    const lead = new Lead({ name, email, phone, company, status, notes });
+    
+    // Attach the logged-in user ID as the owner
+    const lead = new Lead({
+      name,
+      email,
+      phone,
+      company,
+      status,
+      notes,
+      createdBy: req.user._id
+    });
+    
     const savedLead = await lead.save();
     
     res.status(201).json({
@@ -18,30 +29,32 @@ const createLead = async (req, res, next) => {
   }
 };
 
-// @desc    Get all leads with advanced querying (search, filter, sort, pagination)
+// @desc    Get all leads owned by the logged-in user
 // @route   GET /api/leads
-// @access  Public
+// @access  Private
 const getAllLeads = async (req, res, next) => {
   try {
     const { search, status, sortBy, order, page, limit } = req.query;
-    const queryObj = {};
+    
+    // Restrict query to leads owned by the authenticated user
+    const queryObj = { createdBy: req.user._id };
 
-    // 1. Search filter: Searches name, email, company via case-insensitive text index
+    // Search filter: searches name, email, company via case-insensitive text index
     if (search) {
       queryObj.$text = { $search: search };
     }
 
-    // 2. Status filter
+    // Status filter
     if (status) {
       queryObj.status = status;
     }
 
-    // 3. Sorting configuration
+    // Sorting configuration
     const sortField = sortBy || 'createdAt';
     const sortOrder = order === 'asc' ? 1 : -1;
     const sort = { [sortField]: sortOrder };
 
-    // 4. Pagination configuration
+    // Pagination configuration
     const pageNum = parseInt(page, 10) || 1;
     const limitNum = parseInt(limit, 10) || 10;
     const skipNum = (pageNum - 1) * limitNum;
@@ -69,13 +82,15 @@ const getAllLeads = async (req, res, next) => {
   }
 };
 
-// @desc    Get a single lead by ID
+// @desc    Get a single lead by ID (only if owned by the user)
 // @route   GET /api/leads/:id
-// @access  Public
+// @access  Private
 const getLeadById = async (req, res, next) => {
   try {
     const lead = await Lead.findById(req.params.id);
-    if (!lead) {
+    
+    // Return 404 if not found or if the lead belongs to another user
+    if (!lead || lead.createdBy.toString() !== req.user._id.toString()) {
       return res.status(404).json({
         success: false,
         message: 'Lead not found'
@@ -91,12 +106,11 @@ const getLeadById = async (req, res, next) => {
   }
 };
 
-// @desc    Update a lead
+// @desc    Update a lead (only if owned by the user)
 // @route   PUT /api/leads/:id
-// @access  Public
+// @access  Private
 const updateLead = async (req, res, next) => {
   try {
-    const { name, email, phone, company, status, notes } = req.body;
     const lead = await Lead.findById(req.params.id);
     
     if (!lead) {
@@ -106,6 +120,16 @@ const updateLead = async (req, res, next) => {
       });
     }
 
+    // Authorization check
+    if (lead.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorized to modify this lead'
+      });
+    }
+
+    const { name, email, phone, company, status, notes } = req.body;
+    
     if (name !== undefined) lead.name = name;
     if (email !== undefined) lead.email = email;
     if (phone !== undefined) lead.phone = phone;
@@ -124,12 +148,12 @@ const updateLead = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a lead
+// @desc    Delete a lead (only if owned by the user)
 // @route   DELETE /api/leads/:id
-// @access  Public
+// @access  Private
 const deleteLead = async (req, res, next) => {
   try {
-    const lead = await Lead.findByIdAndDelete(req.params.id);
+    const lead = await Lead.findById(req.params.id);
     
     if (!lead) {
       return res.status(404).json({
@@ -137,6 +161,16 @@ const deleteLead = async (req, res, next) => {
         message: 'Lead not found'
       });
     }
+
+    // Authorization check
+    if (lead.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'You are not authorized to modify this lead'
+      });
+    }
+
+    await Lead.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
@@ -149,12 +183,15 @@ const deleteLead = async (req, res, next) => {
   }
 };
 
-// @desc    Get lead statistics
+// @desc    Get lead statistics for the logged-in user
 // @route   GET /api/leads/stats
-// @access  Public
+// @access  Private
 const getLeadStats = async (req, res, next) => {
   try {
     const stats = await Lead.aggregate([
+      {
+        $match: { createdBy: req.user._id }
+      },
       {
         $group: {
           _id: '$status',
@@ -178,7 +215,7 @@ const getLeadStats = async (req, res, next) => {
       }
     });
 
-    formattedStats.total = await Lead.countDocuments();
+    formattedStats.total = await Lead.countDocuments({ createdBy: req.user._id });
 
     res.status(200).json({
       success: true,

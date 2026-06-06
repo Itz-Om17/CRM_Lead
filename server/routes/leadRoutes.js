@@ -8,6 +8,7 @@ const {
   deleteLead,
   getLeadStats
 } = require('../controllers/leadController');
+const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -81,6 +82,9 @@ const updateValidationRules = [
     .trim()
     .isLength({ max: 500 }).withMessage('Notes cannot exceed 500 characters')
 ];
+
+// Apply protection middleware to all lead routes below
+router.use(protect);
 
 // Routes mapping
 router.route('/')

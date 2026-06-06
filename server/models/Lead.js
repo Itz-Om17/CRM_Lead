@@ -45,6 +45,11 @@ const leadSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: [500, 'Notes cannot exceed 500 characters']
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Created by user is required']
     }
   },
   {
@@ -54,6 +59,9 @@ const leadSchema = new mongoose.Schema(
 
 // Compound text index for search on name, email, and company
 leadSchema.index({ name: 'text', email: 'text', company: 'text' });
+
+// Index on createdBy to optimize performance when querying user leads
+leadSchema.index({ createdBy: 1 });
 
 const Lead = mongoose.model('Lead', leadSchema);
 
