@@ -3,10 +3,7 @@
 A full-stack sales pipeline CRM application to add, edit, delete, filter, sort, and search customer leads — with JWT authentication, per-user lead ownership, and a professional public landing page.
 
 ## Live Demo
-[Add Live Demo Link here]
-
-## Screenshots
-[Add screenshots here]
+https://leadflow-crm-om.vercel.app/
 
 ## Features
 
@@ -54,7 +51,7 @@ Follow these steps to set up and run the application locally:
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/Itz-Om17/CRM_Lead.git
-   cd CRM_Lead
+   cd LeadFlow
    ```
 
 2. **Install Root Dependencies**:
@@ -279,7 +276,6 @@ Here is the progression checklist representing how the system was structured ste
 11. `added jwt authentication`
 12. `done with frontend abd and backend`
 13. `deployment changes`
-14.`deployment changes`
 
 ---
 
