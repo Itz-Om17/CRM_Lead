@@ -68,6 +68,8 @@ function App() {
               <Route path="/dashboard/edit/:id" element={<EditLead />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
+            {/* Catch-all route to redirect invalid routes back to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthProvider>
       </Router>
